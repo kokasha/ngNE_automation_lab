@@ -1,0 +1,62 @@
+---
+- name: Build Configuration for Arista Devices
+  hosts: all
+  tasks:
+    - block:
+      - name: Create Directory to store node_config
+        file: name={{device_config}} state=directory
+        run_once: true
+      delegate_to: localhost
+
+
+- name: Generate Arista Configuration
+  hosts: arista
+  tags: arista
+  tasks:
+  - include_role:
+      name: eos_config
+    
+
+- name: Generate Juniper Configuration
+  hosts: juniper
+  tags: juniper
+  tasks:
+  - include_role:
+      name: junos_config
+
+- name: Deploy Config
+  hosts: all
+  tags: [deploy]
+  tasks:
+  - block:
+    - setup:
+        filter: "ansible_date_time"
+        gather_subset: "!all"
+      run_once: true
+      register: sysTime
+      
+    #- set_fact: DateTime={{sysTime.date.iso8601_basic_short}}
+    - file: path={{log_folder}}  state=directory
+    - set_fact: task_log={{log_folder}} #_{{DateTime}}
+    - file: path={{task_log}}  state=directory
+    - file: path={{task_log}}/diff  state=directory
+    - set_fact: base_folder={{playbook_dir.split('/playbooks')[0]}}
+
+    delegate_to: localhost
+    run_once: true
+
+  - name: Push New Config and Retreive Candiate Config using NAPALM
+    napalm_install_config:
+      hostname: "{{ ansible_host }}"
+      username: "{{ ansible_user }}"
+      dev_os: "{{ansible_network_os}}"
+      optional_args:
+          port: "{{ ansible_port }}"
+      password: "{{ ansible_ssh_pass }}"
+      config_file: "{{base_folder}}/net_config/{{inventory_hostname}}.cfg"
+      commit_changes: "{{commit| default('no')}}"
+      #candidate_file : "{{task_folder}}/candidate/{{ inventory_hostname }}.cfg"
+      diff_file: "{{base_folder}}/logs/diff/{{inventory_hostname}}.cfg"
+      replace_config: true
+
+  

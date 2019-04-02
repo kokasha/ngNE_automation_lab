@@ -1,0 +1,19 @@
+{% set node_intf = intf_ip[inventory_hostname] %}
+!
+interface Loopback0
+   ip address {{loopback_ip[inventory_hostname]}}
+!
+{% for port in node_intf %}
+interface {{ port.intf }}
+   description "{{inventory_hostname[:3] | upper}} | Rpeer: {{port.peer}} | Rport: {{port.peer_intf}}"
+   mtu {{mtu}}
+   no switchport
+{% if 'leaf' in inventory_hostname %}
+   ip address {{port.prefix | ipaddr(intf_id.leaf) }}
+{% else %}
+   ip address {{port.prefix | ipaddr(intf_id.spine) }}
+{% endif %}
+   lldp transmit
+   lldp receive
+!
+{% endfor%}

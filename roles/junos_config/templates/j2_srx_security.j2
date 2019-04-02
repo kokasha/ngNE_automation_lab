@@ -1,0 +1,109 @@
+replace: security {
+    screen {
+        ids-option untrust-screen {
+            icmp {
+                ping-death;
+            }
+            ip {
+                source-route-option;
+                tear-drop;
+            }
+            tcp {
+                syn-flood {
+                    alarm-threshold 1024;
+                    attack-threshold 200;
+                    source-threshold 1024;
+                    destination-threshold 2048;
+                    queue-size 2000;
+                    timeout 20;
+                }
+                land;
+            }
+        }
+    }
+    zones {
+{%      for zone in sec_zones %}
+        security-zone {{ zone.name }} {
+            interfaces {
+{%          if zone.intfs is defined %}
+{%          for intf in zone.intfs %}
+                {{intf}} {
+                    host-inbound-traffic {
+                        system-services {
+{%                      for protocol in hst_mgmt_protocols %}
+                            {{protocol}};
+{%                      endfor %}
+                        }
+                    }
+                }
+{%          endfor %}
+{%          else %}
+                /* EMPTY STRING */
+{%          endif %}
+            }
+        }
+{%      endfor %}
+    }
+}
+{#
+
+    policies {
+        from-zone trust to-zone trust {
+            policy default-permit {
+                match {
+                    source-address any;
+                    destination-address any;
+                    application any;
+                }
+                then {
+                    permit;
+                }
+            }
+        }
+        from-zone trust to-zone untrust {
+            policy default-permit {
+                match {
+                    source-address any;
+                    destination-address any;
+                    application any;
+                }
+                then {
+                    permit;
+                }
+            }
+        }
+        from-zone untrust to-zone trust {
+            policy default-deny {
+                match {
+                    source-address any;
+                    destination-address any;
+                    application any;
+                }
+                then {
+                    deny;
+                }
+            }
+        }
+    }
+    zones {
+        security-zone trust {
+            tcp-rst;
+        }
+        security-zone untrust {
+            screen untrust-screen;
+            interfaces {
+                {{mgmt_intf}}.0 {
+                    host-inbound-traffic {
+                        system-services {
+{%                      for protocol in hst_mgmt_protocols %}
+                            {{protocol}};
+{%                      endfor %}
+                        }
+                    }
+                }
+            }
+        }
+{%      for zone in sec_zones %}
+        security-zone {{zone}};
+    }
+#}

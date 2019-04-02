@@ -1,0 +1,42 @@
+---
+# tasks file for junos_config
+- block:
+  - name: Create Directory to store Temp data
+    file: name={{tmp_dir}} state=directory
+    run_once: true  
+
+  - name: Create Directory for each router
+    file: name={{tmp_dir}}/{{inventory_hostname}} state=directory
+
+  - name: Create Managment Configuration
+    template:
+      src: j2_junos_mgmt.j2
+      dest: "{{tmp_dir}}/{{inventory_hostname}}/01_mgmt.cfg"
+    
+  - name: Create Interface Configuration
+    template:
+      src: j2_junos_intf.j2
+      dest: "{{tmp_dir}}/{{inventory_hostname}}/02_intf.cfg"
+
+  - name: Create Routing Configuration
+    template:
+      src: j2_junos_routing.j2
+      dest: "{{tmp_dir}}/{{inventory_hostname}}/03_routing.cfg"
+    when:
+    - "inventory_hostname == 'dc1-fw01' "
+
+  - name: Create Security Configuration
+    template:
+      src: j2_srx_security.j2
+      dest: "{{tmp_dir}}/{{inventory_hostname}}/09_security.cfg"
+    when:
+    - "'fw' in groups"
+
+  - name: Generate Final Device Configuration
+    assemble:
+      src: "{{tmp_dir}}/{{inventory_hostname}}"
+      dest: "{{device_config}}/{{inventory_hostname}}.cfg"
+
+  - name: Delete Temp Directory
+    file: path={{tmp_dir}} state=absent
+    run_once: true

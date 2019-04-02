@@ -1,0 +1,59 @@
+!##### Start Managment Config ##########
+hostname {{inventory_hostname}}
+{% for user in mgmt_users %}
+username {{user.name}}  privilege 15 role network-admin secret {{user.passwd}}
+{% endfor %}
+aaa authorization exec default local
+!
+spanning-tree mode none
+!
+vrf definition {{mgmt_vrf.name}}
+!
+ip routing
+ip routing vrf {{mgmt_vrf.name}}
+!
+{% for prefix in mgmt_prefixes %}
+ip route vrf {{mgmt_vrf.name}} {{ prefix }} {{mgmt_gw | ipaddr('address')}}
+{% endfor %}
+!
+{#snmp-server host 10.5.100.3 version 3 priv symbiosnmpuser
+!snmp-server host 10.5.100.19 version 3 priv symbiosnmpuser
+!snmp-server group symbiosnmpgroup v3 priv
+!snmp-server user symbiosnmpuser symbiosnmpgroup v3 auth sha vbtxKc08dj1k9Amn45IA29dhXREBdVaw priv aes n0kAnXLyuLZi2SggoD8QXzcRagTNU3H5
+!snmp source-interface management 1
+!snmp location AU ESY1 01968 RU32#}
+snmp-server enable traps
+!
+{#{% for syslog in syslog_servers %}
+logging host {{syslog}}
+{% endfor %}
+logging buffered 500000000
+!
+{% for ntp in ntp_servers %}
+ntp server {{ntp}}
+{% endfor %}
+clock timezone Australia/Sydney
+!
+{% for dns in dns_servers %}
+ip name-server vrf default {{dns}}
+{% endfor %}
+ip domain-name net.symbionetworks.com#}
+!
+management console
+   idle-timeout 300
+!
+management ssh
+   idle-timeout 300
+   authentication mode password
+   login timeout 300
+!
+interface {{mgmt_intf}}
+   vrf forwarding {{mgmt_vrf.name}}
+   ip address {{ansible_host}}/{{mgmt_gw|ipaddr('prefix')}}
+!
+management api http-commands
+   no shutdown
+   !
+   vrf {{mgmt_vrf.name}}
+      no shutdown
+!

@@ -1,0 +1,19 @@
+{%  set CORE_INTF = intf_ip[inventory_hostname] %}
+interfaces {
+    {{mgmt_intf}} {
+        unit 0 {
+            family inet {
+                address {{ansible_host}}/{{mgmt_gw|ipaddr('prefix')}};
+            }
+        }
+    }
+{%  for port in CORE_INTF %}
+    {{port.intf}} {
+        unit 0 {
+            family inet {
+                address {{port.prefix | ipaddr(intf_id.fw)}};
+            }
+        }
+    }
+{%  endfor %}
+}

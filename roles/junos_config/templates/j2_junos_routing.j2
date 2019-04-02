@@ -1,0 +1,18 @@
+routing-options {
+    static {
+{%      for prefix in mgmt_prefixes%}
+        route {{prefix}} next-hop {{mgmt_gw | ipaddr('address')}};
+{%      endfor %}
+    }
+    autonomous-system {{bgp_as.fw}};
+    forwarding-table {
+        export lb;
+    }
+}
+policy-options {
+    policy-statement lb {
+        then {
+            load-balance per-packet;
+        }
+    }
+}

@@ -1,0 +1,50 @@
+system {
+    host-name {{ inventory_hostname }};
+    root-authentication {
+        encrypted-password "$1$/VJWQCLP$2CYakah.FnYGNWwMg48DA.";
+    }
+    login {
+{%      for user in mgmt_users %}
+        user {{ user.name }} {
+            class super-user;
+            authentication {
+                encrypted-password "$1$cyy0Fo1u$A0dZoMUHUCVuvh/8ZnwY90"; 
+            }
+{%      endfor %}
+        }
+    }
+    services {
+        ssh;
+        netconf {
+            ssh {
+                port 22;
+            }
+        }
+{% if 'fw' in groups %}
+        web-management {
+            http {
+                interface {{ mgmt_intf }}.0;
+            }
+        }
+{%  endif %}
+    }
+    syslog {
+        user * {
+            any emergency;
+        }
+        file messages {
+            any any;
+            authorization info;
+        }
+        file interactive-commands {
+            interactive-commands any;
+        }
+    }
+{% if 'fw' in groups %}
+    license {
+        autoupdate {
+            url https://ae1.juniper.net/junos/key_retrieval;
+        }
+    }
+{%  endif %}
+}

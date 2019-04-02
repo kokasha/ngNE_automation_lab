@@ -1,0 +1,22 @@
+---
+ansible_python_interpreter: /Users/kokasha/miniconda3/bin/python
+device_config: ../net_config
+log_folder: ../logs
+tmp_dir: ../tmp
+ansible_ssh_user: lab
+ansible_ssh_pass: lab123
+ansible_connection: network_cli
+
+mgmt_users:
+  - name: "{{ ansible_ssh_user }}"
+    passwd: "{{ ansible_ssh_pass }}"
+
+mgmt_vrf:
+  name: mgmt
+  rd: "1:1"
+
+mgmt_prefixes:
+  - 10.8.0.0/24
+  - 192.168.0.0/24
+  - 172.20.1.0/24
+

@@ -1,0 +1,13 @@
+---
+mgmt_intf: ge-0/0/0
+
+hst_mgmt_protocols:
+  - ssh
+  - http
+  - https
+  - netconf
+
+sec_zones:
+  - { name: mgmt, intfs: ["{{mgmt_intf}}.0"] }
+  
+  
