@@ -17,9 +17,9 @@
   napalm_install_config:
     hostname: "{{ ansible_host }}"
     username: "{{ ansible_user }}"
-    dev_os: "{{network_os}}"
+    dev_os: "{{ansible_network_os}}"
     optional_args:
-        port: "{{ napalm_ansible_port }}"
+        port: "{{ ansible_port }}"
     password: "{{ ansible_ssh_pass }}"
     config_file: "{{ task_folder }}/{{ inventory_hostname }}.cfg"
     commit_changes: "{{commit| default('no')}}"

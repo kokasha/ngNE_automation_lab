@@ -3,3 +3,4 @@ ansible_network_os: junos
 ansible_port: 22
 mgmt_intf: em1
 root_passwd: "$1$esEZ.2L8$l/yPJOsqarKfYemrouvhH."
+regex_remove: '## Last changed: .*'
