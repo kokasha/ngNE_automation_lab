@@ -23,7 +23,6 @@
     failed_when: false
     changed_when: false
 
-  - debug: var=check_change_folder
   
   - name: Export new Git Branch
     set_fact: GIT_BRANCH={{change_id}}
