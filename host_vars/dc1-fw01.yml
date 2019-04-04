@@ -6,8 +6,15 @@ hst_mgmt_protocols:
   - http
   - https
   - netconf
+  - ping
+
+hst_protocols:
+  - bgp
+  
+
 
 sec_zones:
   - { name: mgmt, intfs: ["{{mgmt_intf}}.0"] }
+  - { name: trust, intfs: "{{ intf_ip[inventory_hostname] | map(attribute='intf') | list }}" }
   
   

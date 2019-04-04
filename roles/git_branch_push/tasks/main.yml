@@ -1,0 +1,51 @@
+---
+# tasks file for git_branch_push
+  - name: Prepare for Git Push to remote Branch
+    block:
+      - name: Get localtime
+        command: date
+        register: push_date
+        changed_when: false
+
+      - name: Set Commit Message
+        set_fact:
+          commit_msg: " Commit on {{ push_date.stdout}} for {{change_id}} by {{ansible_user}}"
+
+      - name: Check the directory status
+        command: git status
+        args:
+          chdir: "{{ base_folder }}"
+        register: changes
+        changed_when: false
+
+      - name: Set change Flag
+        set_fact:
+          change_flag: true
+        changed_when: false
+        when: not("working directory clean" in changes.stdout)
+
+      - name: "Add files to Git staging area, commit and push"
+        shell: |
+          git add .
+          git commit -m " {{ commit_msg }} "
+          git push origin {{ GIT_BRANCH }}
+        args:
+          chdir: "{{ base_folder }}"
+        changed_when: false
+        when: change_flag|default('false')
+
+      - name: return to master branch
+        command: git checkout master
+        args:
+          chdir: "{{ base_folder }}"
+        changed_when: false
+
+      - name: Remove Git Branch if no change is pending
+        command: git branch -d {{ GIT_BRANCH }}
+        args:
+          chdir: "{{ base_folder }}"
+        when: not(change_flag|default('false'))
+        changed_when: false
+        
+    delegate_to: localhost
+    run_once: yes

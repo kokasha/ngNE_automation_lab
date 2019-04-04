@@ -1,0 +1,16 @@
+---
+- name: Deploy Config with Ansible and Git
+  hosts: all
+  vars_files:
+  tasks:
+  - import_role: 
+        name: create_git_branch
+    delegate_to: localhost
+    run_once: yes
+
+  - import_role: 
+        name: deploy_config
+    tags: [ deploy]
+        
+  - import_role: 
+        name: git_branch_push

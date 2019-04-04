@@ -1,6 +1,7 @@
 {%  set CORE_INTF = intf_ip[inventory_hostname] %}
 interfaces {
     {{mgmt_intf}} {
+        description "{{inventory_hostname[:3]}} | Managment Network ";
         unit 0 {
             family inet {
                 address {{ansible_host}}/{{mgmt_gw|ipaddr('prefix')}};
@@ -8,7 +9,8 @@ interfaces {
         }
     }
 {%  for port in CORE_INTF %}
-    {{port.intf}} {
+    {{port.intf.split('.')[0]}} {
+        description "{{inventory_hostname[:3] | upper}} | Rpeer: {{port.peer}} | Rport: {{port.peer_intf}}"
         unit 0 {
             family inet {
                 address {{port.prefix | ipaddr(intf_id.fw)}};

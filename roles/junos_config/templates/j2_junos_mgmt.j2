@@ -1,3 +1,6 @@
+{% if 'fw' in groups %}
+version 12.1X47-D20.7
+{% endif %}
 system {
     host-name {{ inventory_hostname }};
     root-authentication {
@@ -47,4 +50,12 @@ system {
         }
     }
 {%  endif %}
+}
+protocols {
+    lldp {
+{%  set CORE_INTF = intf_ip[inventory_hostname] %}
+{%      for port in CORE_INTF %}
+        interface {{port.intf}};
+{%      endfor %}
+    }
 }
