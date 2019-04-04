@@ -34,6 +34,11 @@ replace: security {
                             {{protocol}};
 {%                      endfor %}
                         }
+                        protocols {
+{%                      for protocol in hst_protocols %}
+                            {{protocol}};
+{%                      endfor %}
+                        }
                     }
                 }
 {%          endfor %}

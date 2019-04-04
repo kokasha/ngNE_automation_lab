@@ -1,0 +1,42 @@
+---
+# tasks file for deploy_config
+- block:
+    - name: Copy All files in Source config Folder to change requests folder
+      copy:
+        src: "{{ base_folder }}/{{ local_changes_folder }}/{{ change_id }}/"
+        dest: "{{ task_folder }}"
+    - name: Create Config diff directory
+      file: path={{task_folder}}/diff state=directory
+
+    - name: Create Candidate Config  directory
+      file: path={{task_folder}}/candidate state=directory
+  delegate_to: localhost
+  run_once: yes
+
+- name: Push New Config and Retreive Candiate Config using NAPALM
+  napalm_install_config:
+    hostname: "{{ ansible_host }}"
+    username: "{{ ansible_user }}"
+    dev_os: "{{ansible_network_os}}"
+    optional_args:
+        port: "{{ ansible_port }}"
+    password: "{{ ansible_ssh_pass }}"
+    config_file: "{{ task_folder }}/{{ inventory_hostname }}.cfg"
+    commit_changes: "{{commit| default('no')}}"
+    candidate_file : "{{task_folder}}/candidate/{{ inventory_hostname }}.cfg"
+    diff_file: "{{task_folder}}/diff/{{inventory_hostname}}.cfg"
+
+- name: Copy Candidate to Device Config for Compare
+  copy:
+    content: "{{lookup('file','{{task_folder}}/candidate/{{ inventory_hostname }}.cfg')}}"
+    dest: "{{ base_folder}}/{{device_config_folder}}/{{ inventory_hostname }}.cfg"
+
+- name: Remove Candidate Folder
+  file: path={{task_folder}}/candidate  state=absent
+  
+- name: Remove Not needed Lines in the Configuration Files
+  lineinfile:
+    path: '{{ base_folder}}/{{device_config_folder}}/{{ inventory_hostname }}.cfg'
+    regexp: "{{regex_remove}}"
+    state: absent
+  delegate_to: localhost

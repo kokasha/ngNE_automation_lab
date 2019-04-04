@@ -53,7 +53,7 @@
       optional_args:
           port: "{{ ansible_port }}"
       password: "{{ ansible_ssh_pass }}"
-      config_file: "{{base_folder}}/net_config/{{inventory_hostname}}.cfg"
+      config_file: "{{ base_folder}}/{{device_config_folder}}/{{inventory_hostname}}.cfg"
       commit_changes: "{{commit| default('no')}}"
       #candidate_file : "{{task_folder}}/candidate/{{ inventory_hostname }}.cfg"
       diff_file: "{{base_folder}}/logs/diff/{{inventory_hostname}}.cfg"

@@ -3,3 +3,4 @@ ansible_network_os: eos
 ansible_connection: httpapi
 ansible_port: 443
 mgmt_intf: Management1
+regex_remove: '! Command: .*'

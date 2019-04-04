@@ -50,6 +50,8 @@ management ssh
 interface {{mgmt_intf}}
    vrf forwarding {{mgmt_vrf.name}}
    ip address {{ansible_host}}/{{mgmt_gw|ipaddr('prefix')}}
+   no lldp transmit
+   no lldp receive
 !
 management api http-commands
    no shutdown

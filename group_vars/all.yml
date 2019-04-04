@@ -1,8 +1,10 @@
 ---
 ansible_python_interpreter: /Users/kokasha/miniconda3/bin/python
-device_config: ../net_config
+device_config_folder: net_config
 log_folder: ../logs
 tmp_dir: ../tmp
+change_requests_folder: change_requests
+local_changes_folder: local_changes
 ansible_ssh_user: lab
 ansible_ssh_pass: lab123
 ansible_connection: network_cli
