@@ -1,64 +1,66 @@
 ---
-# tasks file for create_git_branch
-  - setup:
-  - name: Set Timestamp
-    set_fact:   
-      sysDate: "{{  ansible_facts.date_time.date }}"
+  - name: Prepare for Git Push to remote Branch
+    block:
+      - setup:
+      - name: Set Timestamp
+        set_fact:   
+          sysDate: "{{  ansible_facts.date_time.date }}"
 
-  - name: Set base Folder
-    set_fact: base_folder={{playbook_dir.split('playbook')[0]}}
+      - name: Set base Folder
+        set_fact: base_folder={{playbook_dir.split('playbook')[0]}}
 
-  - name: Check which Git Branch we are In
-    command: git branch
-    register: git_branch
-    changed_when: false
+      - name: Check which Git Branch we are In
+        command: git branch
+        register: git_branch
+        changed_when: false
 
+      - name: check change folder
+        shell:
+        args:
+          cmd: ls | grep {{ change_id }}
+          chdir: "{{ base_folder }}/{{ change_requests_folder }}"
+        register: check_change_folder
+        failed_when: false
+        changed_when: false
+      
+      - name: Export new Git Branch
+        set_fact: GIT_BRANCH={{change_id}}
 
-  - name: check change folder
-    shell:
-    args:
-      cmd: ls | grep {{ change_id }}
-      chdir: "{{ base_folder }}/{{ change_requests_folder }}"
-    register: check_change_folder
-    failed_when: false
-    changed_when: false
+      - name: Create and Switch to new Git Branch
+        command: 
+        args:
+          cmd: git checkout -b {{ GIT_BRANCH }}
+          chdir: "{{ base_folder }}"
+        when: 
+          - "'* master' in git_branch.stdout"
+          - "change_id not in git_branch.stdout"
 
-  
-  - name: Export new Git Branch
-    set_fact: GIT_BRANCH={{change_id}}
+      - name: Switch to Existing Git Branch
+        command: 
+        args:
+          cmd: git checkout {{ GIT_BRANCH }}
+          chdir: "{{ base_folder }}"
+        when: 
+          - "change_id in git_branch.stdout"
 
-  - name: Create and Switch to new Git Branch
-    command: 
-    args:
-      cmd: git checkout -b {{ GIT_BRANCH }}
-      chdir: "{{ base_folder }}"
-    when: 
-      - "'* master' in git_branch.stdout"
-      - "change_id not in git_branch.stdout"
+      - name: Syncronize with remote branch
+        command: git pull origin master
+        args:
+          chdir: "{{ base_folder }}"
+        changed_when: false
 
-  - name: Switch to Existing Git Branch
-    command: 
-    args:
-      cmd: git checkout {{ GIT_BRANCH }}
-      chdir: "{{ base_folder }}"
-    when: 
-      - "change_id in git_branch.stdout"
+      - name: Set Device task Folder -- First Run
+        set_fact: 
+          task_folder: "{{ base_folder }}/{{ change_requests_folder }}/{{  sysDate }}__{{ change_id }}"
+        when: check_change_folder.stdout == ''
 
-  - name: Syncronize with remote branch
-    command: git pull origin master
-    args:
-      chdir: "{{ base_folder }}"
-    changed_when: false
+      - name: Set Device task Folder
+        set_fact: 
+          task_folder: "{{ base_folder }}/{{ change_requests_folder }}/{{  check_change_folder.stdout }}"
+        when: check_change_folder.stdout != ''
 
-  - name: Set Device task Folder -- First Run
-    set_fact: 
-      task_folder: "{{ base_folder }}/{{ change_requests_folder }}/{{  sysDate }}__{{ change_id }}"
-    when: check_change_folder.stdout == ''
-
-  - name: Set Device task Folder
-    set_fact: 
-      task_folder: "{{ base_folder }}/{{ change_requests_folder }}/{{  check_change_folder.stdout }}"
-    when: check_change_folder.stdout != ''
+    delegate_to: localhost
+    run_once: yes
 
 
 
