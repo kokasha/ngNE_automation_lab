@@ -1,0 +1,19 @@
+language: python
+
+python:
+  - "2.7"
+  - "3.5"
+  - "3.6"
+
+before_install:
+  - pwd
+
+install:
+  - pip install -r requirements.txt
+
+before_script:
+  - echo BEFORE SCRIPT
+
+script:
+  - yamllint .
+
