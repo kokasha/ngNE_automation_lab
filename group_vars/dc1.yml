@@ -25,34 +25,31 @@ loopback_ip:
 
 intf_ip:
   dc1-spine01:
-    - {intf: Ethernet1, prefix: 10.1.1.0/31 , peer: dc1-leaf01, peer_intf: Ethernet9 }
-    - {intf: Ethernet2, prefix: 10.1.1.2/31 , peer: dc1-leaf02 , peer_intf: Ethernet9 }
-    - {intf: Ethernet6, prefix: 10.1.1.252/31 , peer: dc1-spine02 , peer_intf: Ethernet6 }
-    - {intf: Ethernet7, prefix: 10.1.3.0/31 , peer: dc1-fw01 , peer_intf: ge-0/0/1.0 }
-    - {intf: Ethernet9, prefix: 10.1.2.0/31 , peer:  vmx01 , peer_intf: ge-0/0/2.0 }
-    - {intf: Ethernet8, prefix: 10.1.2.2/31 , peer: vmx02 , peer_intf: ge-0/0/2.0 }
+    - {intf: Ethernet1, prefix: 10.1.1.0/31, peer: dc1-leaf01, peer_intf: Ethernet9}
+    - {intf: Ethernet2, prefix: 10.1.1.2/31, peer: dc1-leaf02, peer_intf: Ethernet9}
+    - {intf: Ethernet6, prefix: 10.1.1.252/31, peer: dc1-spine02, peer_intf: Ethernet6}
+    - {intf: Ethernet7, prefix: 10.1.3.0/31, peer: dc1-fw01, peer_intf: ge-0/0/1.0}
+    - {intf: Ethernet9, prefix: 10.1.2.0/31, peer: vmx01, peer_intf: ge-0/0/2.0}
+    - {intf: Ethernet8, prefix: 10.1.2.2/31, peer: vmx02, peer_intf: ge-0/0/2.0}
 
   dc1-spine02:
-    - {intf: Ethernet1, prefix: 10.1.1.64/31 , peer: dc1-leaf01, peer_intf: Ethernet8 }
-    - {intf: Ethernet2, prefix: 10.1.1.66/31 , peer: dc1-leaf02 , peer_intf: Ethernet8 }
-    - {intf: Ethernet6, prefix: 10.1.1.252/31 , peer: dc1-spine01 , peer_intf: Ethernet6 }
-    - {intf: Ethernet7, prefix: 10.1.3.64/31 , peer: dc1-fw01 , peer_intf: ge-0/0/2.0 }
-    - {intf: Ethernet9, prefix: 10.1.2.64/31 , peer:  vmx01 , peer_intf: ge-0/0/3.0 }
-    - {intf: Ethernet8, prefix: 10.1.2.66/31 , peer: vmx02 , peer_intf: ge-0/0/3.0 }
+    - {intf: Ethernet1, prefix: 10.1.1.64/31, peer: dc1-leaf01, peer_intf: Ethernet8}
+    - {intf: Ethernet2, prefix: 10.1.1.66/31, peer: dc1-leaf02, peer_intf: Ethernet8}
+    - {intf: Ethernet6, prefix: 10.1.1.252/31, peer: dc1-spine01, peer_intf: Ethernet6}
+    - {intf: Ethernet7, prefix: 10.1.3.64/31, peer: dc1-fw01, peer_intf: ge-0/0/2.0}
+    - {intf: Ethernet9, prefix: 10.1.2.64/31, peer: vmx01, peer_intf: ge-0/0/3.0}
+    - {intf: Ethernet8, prefix: 10.1.2.66/31, peer: vmx02, peer_intf: ge-0/0/3.0}
 
   dc1-leaf01:
-    - {intf: Ethernet9, prefix: 10.1.1.0/31 , peer: dc1-spine01 , peer_intf: Ethernet1 }
-    - {intf: Ethernet8, prefix: 10.1.1.64/31 , peer: dc1-spine02 , peer_intf: Ethernet1 }
+    - {intf: Ethernet9, prefix: 10.1.1.0/31, peer: dc1-spine01, peer_intf: Ethernet1}
+    - {intf: Ethernet8, prefix: 10.1.1.64/31, peer: dc1-spine02, peer_intf: Ethernet1}
 
 
   dc1-leaf02:
-    - {intf: Ethernet9, prefix: 10.1.1.2/31 , peer: dc1-spine01 , peer_intf: Ethernet2 }
-    - {intf: Ethernet8, prefix: 10.1.1.66/31 , peer: dc1-spine02 , peer_intf: Ethernet2 }
+    - {intf: Ethernet9, prefix: 10.1.1.2/31, peer: dc1-spine01, peer_intf: Ethernet2}
+    - {intf: Ethernet8, prefix: 10.1.1.66/31, peer: dc1-spine02, peer_intf: Ethernet2}
 
 
   dc1-fw01:
-    - {intf: ge-0/0/1.0 , prefix: 10.1.3.0/31 , peer:  dc1-spine01 , peer_intf: Ethernet7 }
-    - {intf: ge-0/0/2.0 , prefix: 10.1.3.64/31 , peer: dc1-spine02 , peer_intf: Ethernet7 }
-
-
-
+    - {intf: ge-0/0/1.0, prefix: 10.1.3.0/31, peer: dc1-spine01, peer_intf: Ethernet7}
+    - {intf: ge-0/0/2.0, prefix: 10.1.3.64/31, peer: dc1-spine02, peer_intf: Ethernet7}

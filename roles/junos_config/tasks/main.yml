@@ -1,9 +1,9 @@
 ---
-# tasks file for junos_config
+
 - block:
   - name: Create Directory to store Temp data
     file: name={{tmp_dir}} state=directory
-    run_once: true  
+    run_once: true
 
   - name: Create Directory for each router
     file: name={{tmp_dir}}/{{inventory_hostname}} state=directory
@@ -12,7 +12,7 @@
     template:
       src: j2_junos_mgmt.j2
       dest: "{{tmp_dir}}/{{inventory_hostname}}/01_mgmt.cfg"
-    
+
   - name: Create Interface Configuration
     template:
       src: j2_junos_intf.j2

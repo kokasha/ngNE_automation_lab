@@ -1,0 +1,11 @@
+---
+extends: default
+rules:
+  new-line-at-end-of-file: disable
+  indentation: 
+    level: warning
+  trailing-spaces:
+    level: warning
+  line-length:
+    level: warning
+    allow-non-breakable-inline-mappings: true

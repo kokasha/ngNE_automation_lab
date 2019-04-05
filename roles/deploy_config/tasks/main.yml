@@ -23,7 +23,7 @@
     password: "{{ ansible_ssh_pass }}"
     config_file: "{{ task_folder }}/{{ inventory_hostname }}.cfg"
     commit_changes: "{{commit| default('no')}}"
-    candidate_file : "{{task_folder}}/candidate/{{ inventory_hostname }}.cfg"
+    candidate_file: "{{task_folder}}/candidate/{{ inventory_hostname }}.cfg"
     diff_file: "{{task_folder}}/diff/{{inventory_hostname}}.cfg"
 
 - name: Copy Candidate to Device Config for Compare

@@ -14,7 +14,7 @@ hst_protocols:
 
 
 sec_zones:
-  - { name: mgmt, intfs: ["{{mgmt_intf}}.0"] }
-  - { name: trust, intfs: "{{ intf_ip[inventory_hostname] | map(attribute='intf') | list }}" }
+  - {name: mgmt, intfs: ["{{mgmt_intf}}.0"]}
+  - {name: trust, intfs: "{{ intf_ip[inventory_hostname] | map(attribute='intf') | list }}"}
   
   
