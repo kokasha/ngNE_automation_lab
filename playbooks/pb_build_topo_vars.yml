@@ -1,0 +1,39 @@
+---
+- name: Update all Group Vars and Host Vars Files
+  hosts: all
+  connection: local
+  tasks:
+  - name: Build BGP Topology
+    blockinfile:
+      block: |
+        bgp_peers:
+        {% for node in play_hosts%}
+        {% set node_bgp = hostvars[node]%}
+          {{node}}:
+        {% if 'spine' in node %}
+        {%   set local_as = bgp_as.spine + node[-2:] | int %}
+        {% elif 'leaf' in node %}
+        {%   set local_as = bgp_as.leaf + node[-2:] | int %}
+        {% elif 'fw' in node %}
+        {%   set local_as = bgp_as.fw + node[-2:] | int %}
+        {% endif %}
+        {% set bgp_node_data = _bgp_peers[node]%}
+        {% for peer in bgp_node_data %}
+        {%   if 'spine' in peer.id %}
+        {%     set peer_as = bgp_as.spine + peer.id[-2:] | int %}
+        {% set peer_ip = intf_ip[node]| selectattr('peer','equalto',peer.id)| map(attribute='prefix')|first|ipv4(intf_id.spine)| ipaddr('address') %}
+        {%   elif 'leaf' in peer.id %}
+        {%     set peer_as = bgp_as.leaf + peer.id[-2:] | int %}
+        {%   elif 'fw' in peer.id %}
+        {%     set peer_as = bgp_as.fw + peer.id[-2:] | int %}
+        {%   elif 'mx' or 'csr' in peer.id %}
+        {%     set peer_as = bgp_as.gw + peer.id[-2:] | int %}
+        {%   endif %}
+        {% set peer_ip = intf_ip[node]| selectattr('peer','equalto',peer.id)| map(attribute='prefix')|first|ipaddr() %}
+            - {peer: {{peer.id}}, local_as: {{local_as}}, peer_as: {{peer_as}}, peer_ip: {{peer_ip}}}
+        {% endfor %}
+        {% endfor %}
+      path: "group_vars/dc1.yml"
+    run_once: yes
+    #delegate_to: localhost
+
