@@ -24,12 +24,14 @@
         {% set peer_ip = intf_ip[node]| selectattr('peer','equalto',peer.id)| map(attribute='prefix')|first|ipv4(intf_id.spine)| ipaddr('address') %}
         {%   elif 'leaf' in peer.id %}
         {%     set peer_as = bgp_as.leaf + peer.id[-2:] | int %}
+        {% set peer_ip = intf_ip[node]| selectattr('peer','equalto',peer.id)| map(attribute='prefix')|first|ipv4(intf_id.leaf)| ipaddr('address') %}
         {%   elif 'fw' in peer.id %}
         {%     set peer_as = bgp_as.fw + peer.id[-2:] | int %}
+        {% set peer_ip = intf_ip[node]| selectattr('peer','equalto',peer.id)| map(attribute='prefix')|first|ipv4(intf_id.fw)| ipaddr('address') %}
         {%   elif 'mx' or 'csr' in peer.id %}
         {%     set peer_as = bgp_as.gw + peer.id[-2:] | int %}
+        {% set peer_ip = intf_ip[node]| selectattr('peer','equalto',peer.id)| map(attribute='prefix')|first|ipv4(intf_id.gw)| ipaddr('address') %}
         {%   endif %}
-        {% set peer_ip = intf_ip[node]| selectattr('peer','equalto',peer.id)| map(attribute='prefix')|first|ipaddr() %}
             - {peer: {{peer.id}}, local_as: {{local_as}}, peer_as: {{peer_as}}, peer_ip: {{peer_ip}}}
         {% endfor %}
         {% endfor %}

@@ -82,24 +82,24 @@ _bgp_peers:
 # BEGIN ANSIBLE MANAGED BLOCK
 bgp_peers:
   dc1-spine01:
-    - {peer: dc1-leaf01, local_as: 65201, peer_as: 65101, peer_ip: 10.1.1.0/31}
-    - {peer: dc1-leaf02, local_as: 65201, peer_as: 65102, peer_ip: 10.1.1.2/31}
-    - {peer: dc1-fw01, local_as: 65201, peer_as: 65301, peer_ip: 10.1.3.0/31}
-    - {peer: vmx01, local_as: 65201, peer_as: 65401, peer_ip: 10.1.2.0/31}
-    - {peer: vmx02, local_as: 65201, peer_as: 65402, peer_ip: 10.1.2.2/31}
+    - {peer: dc1-leaf01, local_as: 65201, peer_as: 65101, peer_ip: 10.1.1.1}
+    - {peer: dc1-leaf02, local_as: 65201, peer_as: 65102, peer_ip: 10.1.1.3}
+    - {peer: dc1-fw01, local_as: 65201, peer_as: 65301, peer_ip: 10.1.3.1}
+    - {peer: vmx01, local_as: 65201, peer_as: 65401, peer_ip: 10.1.2.1}
+    - {peer: vmx02, local_as: 65201, peer_as: 65402, peer_ip: 10.1.2.3}
   dc1-spine02:
-    - {peer: dc1-leaf01, local_as: 65202, peer_as: 65101, peer_ip: 10.1.1.64/31}
-    - {peer: dc1-leaf02, local_as: 65202, peer_as: 65102, peer_ip: 10.1.1.66/31}
-    - {peer: dc1-fw01, local_as: 65202, peer_as: 65301, peer_ip: 10.1.3.64/31}
-    - {peer: vmx01, local_as: 65202, peer_as: 65401, peer_ip: 10.1.2.64/31}
-    - {peer: vmx02, local_as: 65202, peer_as: 65402, peer_ip: 10.1.2.66/31}
+    - {peer: dc1-leaf01, local_as: 65202, peer_as: 65101, peer_ip: 10.1.1.65}
+    - {peer: dc1-leaf02, local_as: 65202, peer_as: 65102, peer_ip: 10.1.1.67}
+    - {peer: dc1-fw01, local_as: 65202, peer_as: 65301, peer_ip: 10.1.3.65}
+    - {peer: vmx01, local_as: 65202, peer_as: 65401, peer_ip: 10.1.2.65}
+    - {peer: vmx02, local_as: 65202, peer_as: 65402, peer_ip: 10.1.2.67}
   dc1-leaf01:
-    - {peer: dc1-spine01, local_as: 65101, peer_as: 65201, peer_ip: 10.1.1.0/31}
-    - {peer: dc1-spine02, local_as: 65101, peer_as: 65202, peer_ip: 10.1.1.64/31}
+    - {peer: dc1-spine01, local_as: 65101, peer_as: 65201, peer_ip: 10.1.1.0}
+    - {peer: dc1-spine02, local_as: 65101, peer_as: 65202, peer_ip: 10.1.1.64}
   dc1-leaf02:
-    - {peer: dc1-spine01, local_as: 65102, peer_as: 65201, peer_ip: 10.1.1.2/31}
-    - {peer: dc1-spine02, local_as: 65102, peer_as: 65202, peer_ip: 10.1.1.66/31}
+    - {peer: dc1-spine01, local_as: 65102, peer_as: 65201, peer_ip: 10.1.1.2}
+    - {peer: dc1-spine02, local_as: 65102, peer_as: 65202, peer_ip: 10.1.1.66}
   dc1-fw01:
-    - {peer: dc1-spine01, local_as: 65301, peer_as: 65201, peer_ip: 10.1.3.0/31}
-    - {peer: dc1-spine02, local_as: 65301, peer_as: 65202, peer_ip: 10.1.3.64/31}
+    - {peer: dc1-spine01, local_as: 65301, peer_as: 65201, peer_ip: 10.1.3.0}
+    - {peer: dc1-spine02, local_as: 65301, peer_as: 65202, peer_ip: 10.1.3.64}
 # END ANSIBLE MANAGED BLOCK
