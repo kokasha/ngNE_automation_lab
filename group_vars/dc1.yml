@@ -10,6 +10,7 @@ intf_id:
   leaf: 1
   spine: 0
   fw: 1
+  gw: 1
 
 bgp_as:
   leaf: 65100
@@ -53,3 +54,11 @@ intf_ip:
   dc1-fw01:
     - {intf: ge-0/0/1.0, prefix: 10.1.3.0/31, peer: dc1-spine01, peer_intf: Ethernet7}
     - {intf: ge-0/0/2.0, prefix: 10.1.3.64/31, peer: dc1-spine02, peer_intf: Ethernet7}
+
+bgp_peers:
+  dc1-spine01:
+    - {peer: dc1-leaf01, local_as: 652001, peer_as: }
+    - {peer: dc1-leaf01, local_as: 65001, peer_as: }
+    - {peer: dc1-fw01, local_as: 65001, peer_as: }
+    - {peer: vmx01, local_as: 65001, peer_as: }
+    - {peer: vmx02, local_as: , peer_as: }

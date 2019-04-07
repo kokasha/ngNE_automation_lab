@@ -1,6 +1,7 @@
 ---
 # tasks file for eos_config
-- block:
+- name: Create Configuration for Arista Config
+  block:
   - name: Create Directory to store Temp data
     file: name={{tmp_dir}} state=directory
     run_once: true  

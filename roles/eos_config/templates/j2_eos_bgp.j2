@@ -1,0 +1,45 @@
+{% set node_igp = igp[inventory_hostname] %}
+{% set node_bgp = bgp[inventory_hostname] %}
+!##### Start BGP Config ##########
+service routing protocols model multi-agent
+!
+route-map ADD_SITE_COMM permit 10
+   set community {{node_bgp.site_comm}}
+!
+router bgp {{bgp_asn}}
+   router-id {{node_igp.lo_ipv4|replace('/32','')}}
+   maximum-paths 2
+   bgp bestpath tie-break router-id
+   neighbor PG_IBGP_CORE_RR peer-group
+   neighbor PG_IBGP_CORE_RR remote-as {{bgp_asn}}
+   neighbor PG_IBGP_CORE_RR next-hop-self
+   neighbor PG_IBGP_CORE_RR update-source Loopback0
+   neighbor PG_IBGP_CORE_RR description "Peer Group for MPLS CORE RR Routers"
+   neighbor PG_IBGP_CORE_RR graceful-restart-helper
+   neighbor PG_IBGP_CORE_RR send-community standard extended
+   neighbor PG_IBGP_CORE_RR maximum-routes 100000 warning-only
+   neighbor {{node_bgp.rr1_ip}} peer-group PG_IBGP_CORE_RR
+   neighbor {{node_bgp.rr1_ip}} description "{{node_bgp.rr1}}"
+   neighbor {{node_bgp.rr2_ip}} peer-group PG_IBGP_CORE_RR
+   neighbor {{node_bgp.rr2_ip}} description "{{node_bgp.rr2}}"
+   !
+   address-family evpn
+      neighbor PG_IBGP_CORE_RR activate
+      neighbor PG_IBGP_CORE_RR route-map ADD_SITE_COMM out
+   !
+   address-family ipv4
+      neighbor PG_IBGP_CORE_RR activate
+      neighbor PG_IBGP_CORE_RR route-map ADD_SITE_COMM out
+   !
+   address-family ipv6
+      neighbor PG_IBGP_CORE_RR activate
+      neighbor PG_IBGP_CORE_RR route-map ADD_SITE_COMM out
+   !
+   address-family vpn-ipv4
+      neighbor PG_IBGP_CORE_RR activate
+      neighbor PG_IBGP_CORE_RR route-map ADD_SITE_COMM out
+   !
+   address-family vpn-ipv6
+      neighbor PG_IBGP_CORE_RR activate
+      neighbor PG_IBGP_CORE_RR route-map ADD_SITE_COMM out
+!

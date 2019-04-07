@@ -1,6 +1,7 @@
 ---
 
-- block:
+- name: Create the confguration for Juniper Devices
+  block:
   - name: Create Directory to store Temp data
     file: name={{tmp_dir}} state=directory
     run_once: true

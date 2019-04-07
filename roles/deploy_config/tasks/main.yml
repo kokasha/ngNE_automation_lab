@@ -1,6 +1,7 @@
 ---
 # tasks file for deploy_config
-- block:
+- name: Deploy config to network Devices
+  block:
     - name: Copy All files in Source config Folder to change requests folder
       copy:
         src: "{{ base_folder }}/{{ local_changes_folder }}/{{ change_id }}/"
